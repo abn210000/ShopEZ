@@ -34,6 +34,7 @@ export default function ShopEZ() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
 
   const [password, setPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
   const [customerName, setCustomerName] = useState('')
   const [email, setEmail] = useState('')
   const [phoneNo, setPhoneNo] = useState('')
@@ -51,6 +52,19 @@ export default function ShopEZ() {
   const totalItems = cart.length
   const totalPrice = cart.reduce((sum, item) => sum + item.price, 0)
 
+  const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/
+
+  const validatePassword = (password: string) => {
+    if (!passwordRequirements.test(password)) {
+      setPasswordError(
+        'Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one number, and one special character (!, @, #, etc.)'
+      );
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  }
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -65,6 +79,12 @@ export default function ShopEZ() {
 
   const handleCreateAccount = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate password
+    if (!validatePassword(password)){
+      return;
+    }
+
     try {
       const userData = {
         email,
@@ -115,6 +135,7 @@ export default function ShopEZ() {
                 {/** Account creation form fields */}
                 <InputField label="Full Name" value={customerName} onChange={setCustomerName} required />
                 <InputField label="Password" type="password" value={password} onChange={setPassword} required />
+                {passwordError && <p className="text-red-500 text-sm mt-2">{passwordError}</p>}
                 <InputField label="Email" type="email" value={email} onChange={setEmail} required />
                 <InputField label="Phone Number" value={phoneNo} onChange={setPhoneNo} required />
                 <InputField label="Street Address" value={street} onChange={setStreet} required />
