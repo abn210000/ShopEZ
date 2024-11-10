@@ -224,6 +224,7 @@ function ProductGrid({ products, addToCart }: any) {
           </CardContent>
         </Card>
       ))}
+      <a href="/api/auth/logout">Logout</a>
     </div>
   )
 }
